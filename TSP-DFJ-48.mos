@@ -2,8 +2,6 @@ model ModelName
 uses "mmxprs"; !gain access to the Xpress-Optimizer solver
 uses "mmsystem" ! include package to operating systems
 
-
-    
 N := 48  ! number of cities
 
 declarations
@@ -31,8 +29,7 @@ end-initializations
 
 
 ! compute dist(i,j) the distance between each pair of cities using (x,y) coordinates of the cities, which are in the array coord
-! you may need square root function sqrt()
-!!!!!!!!!!!!!!! fill in your code here !!!!!!!!!!!!!!!!!!!! 
+
 forall(i in 1..N) do
 	forall(j in 1..N) do
 		dist(i,j) := sqrt((coord(i,2)-coord(j,2))^2+(coord(i,3)-coord(j,3))^2)
@@ -40,21 +37,18 @@ forall(i in 1..N) do
 	end-do
 end-do
 
-
-
-
 !!!!!!!!!!!!! objective: total distance of a tour
-!!!!!!!!! fill in your code here !!!!!!!!!!!!!!!
+
 TotalDist := sum(i in 1..N,j in 1..N) (dist(i,j)*x(i,j))
 
 
 !!!!!!!!!! write constraint: x(i,j) is binary !!!!!!!!!!!!!!!!
-!!!!!!!!! fill in your code here !!!!!!!!!!!!!!!
+
 forall(i in 1..N,j in 1..N) x(i,j) is_binary
 
 
 !!!!!!!!!!! write assignment constraints: in and out constraints for each city !!!!!!!!!!!!!!!!!!!
-!!!!!!!!! fill in your code here !!!!!!!!!!!!!!!
+
 forall(i in 1..N) do
 	sum(j in 1..N) x(i,j) = 1
 end-do
@@ -65,7 +59,7 @@ end-do
 
 
 !!!!!!!!!! write 1-city subtour elimination constraints here !!!!!!!!!!!!!!!!!
-!!!!!!!!! fill in your code here !!!!!!!!!!!!!!!
+
 forall(i in 1..N) do
 	onetourCtr(getsize(onetourCtr)+1) := x(i,i) = 0
 end-do
@@ -73,7 +67,7 @@ end-do
 
 
 !!!!!!!!!!! write 2-city subtour elimination constraints here !!!!!!!!!!!!!!!!!!!
-!!!!!!!!! fill in your code here !!!!!!!!!!!!!!!
+
 forall(i in 1..N,j in 1..N | (j>i)) do
 		twotourCtr(getsize(twotourCtr)+1) := (x(i,j)+x(j,i)) <= 1
 end-do
@@ -81,7 +75,6 @@ end-do
 
 
 !!!!!!!!!! write 3-city subtour elimination constraints here !!!!!!!!!!!!!!
-!!!!!!!!! fill in your code here !!!!!!!!!!!!!!!
 
 !forall(i in 1..N,j in 1..N,k in 1..N | (j>i) and (k>j)) do
 !		threetourCtr(getsize(threetourCtr)+1) := x(i,j)+x(j,k)+x(k,i)+x(i,k)+x(k,j)+x(j,i) <=2
@@ -89,7 +82,6 @@ end-do
 !end-do
 
 !!!!!!!!!! write 4-city subtour elimination constraints here !!!!!!!!!!!!!!
-!!!!!!!!! fill in your code here !!!!!!!!!!!!!!!
 
 !forall(i in 1..N,j in 1..N,k in 1..N,l in 1..N |(j>i)and(k>j)and(l>k)) do
 !		fourtourCtr(getsize(fourtourCtr)+1) := x(i,j)+x(j,k)+x(k,l)+x(l,i)+x(i,k)+x(k,j)+x(j,l)+x(i,l)+x(l,j)+x(k,i)+x(l,k)+x(j,i)<= 3
@@ -130,11 +122,10 @@ repeat
 	end-do
 	subtourCities(1) := 1  ! City 1 (Atlanta) is always on the subtour
 		
-	! Start the procedure to look for a subtour starting and ending at City 1. The basic algorithm is discussed in the hand-out
-	! Note you need to update SubtourCities for cities that are on the subtour 
-	! You also need to keep track of the number of cities numSubtourCities on the subtour
-	
-	!!!!!!!!! fill in your code here !!!!!!!!!!!!!!!
+	! Start the procedure to look for a subtour starting and ending at City 1.
+	! Note: Need to update SubtourCities for cities that are on the subtour
+	! Also need to keep track of the number of cities numSubtourCities on the subtour
+
 	forall (i in 1..N+1) do
 			NEXTCITY(i):= 0
 	end-do
@@ -169,7 +160,6 @@ repeat
 	!!!!!!!!!!!!!!!!!!!! add the subtour elimination constraint !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	! If the subtour found above is indeed a subtour (i.e. has fewer than 48 cities), then add the corresponding subtour elimination constraint to the problem
 	! otherwise, if the subtour has 48 cities, then it's a TSP tour and optimal, terminate the constraint generation by setting the flag to 1
-	!!!!!! fill in you code !!!!!!!!!!
 
 	if numSubtourCities = N then
 		flag := 1
